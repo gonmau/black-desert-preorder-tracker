@@ -1,0 +1,32 @@
+# Crimson Desert Tracker - Python Dependencies
+
+# Core dependencies
+aiohttp>=3.9.0
+asyncio>=3.4.3
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Database
+sqlite3  # Built-in with Python
+
+# Scheduling
+schedule>=1.2.0
+
+# API clients (optional - install only if you have API keys)
+# tweepy>=4.14.0  # Twitter API (alternative to direct API calls)
+# praw>=7.7.0     # Reddit API (alternative wrapper)
+# google-api-python-client>=2.100.0  # YouTube API (alternative wrapper)
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Utilities
+requests>=2.31.0
+beautifulsoup4>=4.12.0  # For web scraping if needed
+lxml>=4.9.0
