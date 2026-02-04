@@ -1,83 +1,93 @@
-import asyncio, aiohttp, json, sqlite3, os
+import asyncio, aiohttp, sqlite3, os, re
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 GAME_INFO = {
     "name": "Crimson Desert",
     "steam_app_id": "3321460"
 }
 
-# =========================
-# DB
-# =========================
-class DatabaseManager:
-    def __init__(self, db_path="crimson_desert_data.db"):
-        self.db_path = db_path
-        self.init()
-
-    def init(self):
-        conn = sqlite3.connect(self.db_path)
-        cur = conn.cursor()
-        cur.execute("""
-        CREATE TABLE IF NOT EXISTS steam_followers (
-            ts TEXT,
-            followers INTEGER
-        )
-        """)
-        conn.commit()
-        conn.close()
-
-    def save_followers(self, ts, value):
-        conn = sqlite3.connect(self.db_path)
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO steam_followers VALUES (?,?)",
-            (ts, value)
-        )
-        conn.commit()
-        conn.close()
+DB = "crimson_desert_data.db"
 
 # =========================
-# SteamDB 수집기 (핵심)
+# DB (항상 자동 생성)
 # =========================
-class SteamDBTracker:
+def ensure_db():
+    conn = sqlite3.connect(DB)
+    cur = conn.cursor()
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS steam_followers (
+        ts TEXT,
+        followers INTEGER
+    )
+    """)
+    conn.commit()
+    conn.close()
+
+ensure_db()
+
+def save_followers(ts, value):
+    conn = sqlite3.connect(DB)
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO steam_followers VALUES (?,?)",
+        (ts, value)
+    )
+    conn.commit()
+    conn.close()
+
+# =========================
+# SteamDB 웹 파싱 버전 (403 회피)
+# =========================
+class SteamDBScraper:
     def __init__(self, app_id):
         self.app_id = app_id
+        self.url = f"https://steamdb.info/app/{app_id}/"
 
     async def get_followers(self, session):
-        """
-        SteamDB의 followers 데이터를 파싱
-        """
-        url = f"https://steamdb.info/api/GetAppInfo/{self.app_id}/"
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/120.0.0.0 Safari/537.36"
+            ),
+            "Accept-Language": "en-US,en;q=0.9",
+        }
 
-        async with session.get(url) as r:
-            data = await r.json()
+        async with session.get(self.url, headers=headers) as r:
+            html = await r.text()
 
-        followers = data.get("data", {}).get("followers", 0)
+        soup = BeautifulSoup(html, "lxml")
 
-        # 문자열 방어 처리
-        if isinstance(followers, str):
-            followers = int(followers.replace(",", ""))
+        # SteamDB 페이지에서 "Followers" 텍스트 찾기
+        text = soup.get_text()
 
+        # 예: "Followers 12,345"
+        match = re.search(r"Followers\s+([\d,]+)", text)
+
+        if not match:
+            print("⚠️ Followers 숫자 찾기 실패 — 기본값 0 반환")
+            return 0
+
+        followers = int(match.group(1).replace(",", ""))
         return followers
 
 # =========================
-# 메인 모니터
+# 메인 실행
 # =========================
 class CrimsonDesertMonitor:
     def __init__(self):
-        self.db = DatabaseManager()
-        self.steamdb = SteamDBTracker(GAME_INFO["steam_app_id"])
+        self.scraper = SteamDBScraper(GAME_INFO["steam_app_id"])
 
     async def run(self):
         async with aiohttp.ClientSession() as session:
-            followers = await self.steamdb.get_followers(session)
+            followers = await self.scraper.get_followers(session)
 
         ts = datetime.now().isoformat()
-        self.db.save_followers(ts, followers)
+        save_followers(ts, followers)
 
         print(f"✅ Steam Followers 저장: {followers:,}")
 
-# 실행
 async def main():
     m = CrimsonDesertMonitor()
     await m.run()
