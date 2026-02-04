@@ -2,82 +2,56 @@ name: Daily Crimson Desert Tracking
 
 on:
   schedule:
-    # 매일 UTC 00:00 (한국시간 09:00)에 실행
-    - cron: '0 0 * * *'
-  workflow_dispatch:  # 수동 실행 가능
+    - cron: "0 7 * * *"   # 매일 오전 7시(KST 기준 아님, UTC 기준)
+  workflow_dispatch:      # 수동 실행 가능
 
 permissions:
-  contents: write   # ✅ Git push 허용 (필수)
+  contents: write         # repo에 파일 저장 허용
 
 jobs:
-  track-and-report:
+  track-and-visualize:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4   # ✅ 최신
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'    # ✅ 변경 (중요)
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      # ---------- ★ 핵심 실행 순서 ★ ----------
+      - name: Run tracker (collect data)
+        run: |
+          python tracker.py
 
-    - name: Create reports directory
-      run: mkdir -p reports
+      - name: Run visualizer (make chart)
+        run: |
+          python visualizer.py
+      # ---------------------------------------
 
-    - name: Run data collection
-      env:
-        STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
-        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
-        REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
-        TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
-      run: |
-        python scheduler.py --mode once
+      - name: List generated files (debug)
+        run: |
+          ls -R .
 
-    - name: Generate visualizations
-      run: |
-        python visualizer.py
+      - name: Upload chart artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: followers-trend
+          path: |
+            followers_trend.png
 
-    - name: Commit and push if changes
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git add reports/
-        git commit -m "📊 Daily tracking update $(date +'%Y-%m-%d')" || echo "No changes"
-        git push
+      - name: Commit and push results
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
 
-    - name: Upload reports as artifacts
-      uses: actions/upload-artifact@v4   # ✅ v4로 변경
-      with:
-        name: daily-reports-${{ github.run_number }}
-        path: |
-          reports/*.json
-          reports/*.png
-        retention-days: 30
-
-    - name: Create Issue on Failure
-      if: failure()
-      uses: actions/github-script@v6
-      with:
-        script: |
-          github.rest.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: '❌ Daily Tracking Failed - ' + new Date().toISOString().split('T')[0],
-            body: 'The daily tracking workflow failed. Please check the logs.',
-            labels: ['automation', 'bug']
-          })
+          git add crimson_desert_data.db followers_trend.png
+          git commit -m "📊 Daily tracking update $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
