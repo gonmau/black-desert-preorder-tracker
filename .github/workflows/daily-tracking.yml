@@ -1,1 +1,216 @@
+name: Daily Crimson Desert Tracking
 
+on:
+  schedule:
+    # 매일 UTC 00:00 (한국시간 09:00)에 실행
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # 수동 실행 가능
+
+jobs:
+  track-and-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Create reports directory
+      run: mkdir -p reports
+    
+    - name: Run data collection
+      env:
+        STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+        REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+        TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+      run: |
+        python scheduler.py --mode once
+    
+    - name: Generate visualizations
+      run: |
+        python visualizer.py
+    
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add -A
+        git diff --quiet && git diff --staged --quiet || (git commit -m "📊 Daily tracking update $(date +'%Y-%m-%d')" && git push)
+    
+    - name: Upload reports as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: daily-reports-${{ github.run_number }}
+        path: |
+          reports/
+          *.json
+        retention-days: 30
+    
+    - name: Create Issue on Failure
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '❌ Daily Tracking Failed - ' + new Date().toISOString().split('T')[0],
+            body: 'The daily tracking workflow failed. Please check the logs.',
+            labels: ['automation', 'bug']
+          })
+```
+
+5. **Commit changes 클릭**
+   - 오른쪽 상단 초록색 버튼
+   - "Commit directly to the main branch" 선택
+   - "Commit new file" 클릭
+
+---
+
+### 방법 2: 이미 업로드한 파일이 있다면
+
+파일을 이미 업로드했는데 이 화면이 나온다면:
+
+1. **Actions 탭으로 돌아가기**
+   - 상단의 "Actions" 탭 클릭
+
+2. **"I understand my workflows, go ahead and enable them" 클릭**
+   - 초록색 버튼이 보일 것입니다
+
+3. **워크플로우 확인**
+   - 왼쪽에 "Daily Crimson Desert Tracking" 보이면 성공!
+
+---
+
+## 📍 현재 상황 확인
+
+### 파일 구조가 맞는지 확인
+
+GitHub 저장소에서:
+
+1. **Code 탭 클릭**
+
+2. **파일 구조 확인**
+```
+   crimson-desert-tracker/
+   ├── .github/
+   │   └── workflows/
+   │       └── daily-tracking.yml  ← 이 파일이 있어야 함!
+   ├── tracker.py
+   ├── visualizer.py
+   ├── scheduler.py
+   └── ...
+```
+
+3. **확인 방법**
+   - Code 탭에서 `.github` 폴더 클릭
+   - `workflows` 폴더 클릭  
+   - `daily-tracking.yml` 파일이 보이면 OK!
+
+---
+
+## 🎯 파일이 없다면?
+
+### 웹에서 직접 생성
+
+1. **Code 탭에서**
+   - "Add file" 클릭
+   - "Create new file" 클릭
+
+2. **파일 이름 입력**
+```
+   .github/workflows/daily-tracking.yml
+```
+   
+   타이핑하면 자동으로 폴더가 생성됩니다!
+
+3. **위의 YAML 코드 붙여넣기**
+
+4. **Commit new file 클릭**
+
+---
+
+## ✅ 설정 완료 후 테스트
+
+### 1. Actions 탭으로 이동
+
+### 2. 워크플로우 확인
+- 왼쪽에 "Daily Crimson Desert Tracking" 보임
+
+### 3. 수동 실행
+- "Daily Crimson Desert Tracking" 클릭
+- 오른쪽 "Run workflow" 버튼 클릭
+- "Run workflow" 다시 클릭 (초록색)
+
+### 4. 실행 확인
+```
+🟡 노란색 동그라미 = 실행 중
+✅ 녹색 체크 = 성공!
+❌ 빨간 X = 실패 (Secrets 확인 필요)
+```
+
+---
+
+## 🔑 Secrets 설정 (필수!)
+
+워크플로우가 생성되었다면 이제 API 키를 설정해야 합니다:
+
+### 1. Settings 탭 클릭
+
+### 2. Secrets and variables → Actions
+
+### 3. New repository secret 클릭
+
+### 4. API 키 추가
+
+최소한 YouTube만이라도 추가:
+```
+Name: YOUTUBE_API_KEY
+Secret: AIzaSy... (본인의 API 키)
+```
+
+"Add secret" 클릭
+
+---
+
+## 📊 예상 결과
+
+### 성공 시:
+```
+✅ Checkout repository
+✅ Set up Python
+✅ Install dependencies
+✅ Run data collection
+   📊 Steam 데이터 수집 중...
+   📺 YouTube 데이터 수집 중...
+✅ Generate visualizations
+✅ Commit and push if changes
+✅ Upload reports as artifacts
+```
+
+### 실패 시 (API 키 없음):
+```
+✅ Checkout repository
+✅ Set up Python
+✅ Install dependencies
+❌ Run data collection
+   ⚠️ YouTube API 키가 설정되지 않음
