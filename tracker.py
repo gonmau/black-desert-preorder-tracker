@@ -514,7 +514,7 @@ class CrimsonDesertMonitor:
             # 각 플랫폼 데이터 수집
             steam_data = await self.collect_steam_metrics(session)
             youtube_data = await self.collect_youtube_metrics(session)
-            reddit_data = await self.collect_reddit_metrics(session)
+            # reddit_data = await self.collect_reddit_metrics(session) #
             twitter_data = await self.collect_twitter_metrics(session)
         
         print(f"\n{'='*60}")
