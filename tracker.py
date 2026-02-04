@@ -347,8 +347,8 @@ class CrimsonDesertMonitor:
         self.db = DatabaseManager()
         self.steam = SteamTracker(GAME_INFO['steam_app_id'], STEAM_API_KEY)
         self.youtube = YouTubeTracker(YOUTUBE_API_KEY) if YOUTUBE_API_KEY else None
-        self.reddit = RedditTracker(REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET) \
-            if REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET else None
+        # self.reddit = RedditTracker(REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET) \
+        #    if REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET else None #
         self.twitter = TwitterTracker(TWITTER_BEARER_TOKEN) if TWITTER_BEARER_TOKEN else None
     
     async def collect_steam_metrics(self, session: aiohttp.ClientSession):
