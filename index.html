@@ -145,7 +145,7 @@ function makeSample(days){
 async function loadData(){
   document.getElementById('statusTxt').textContent='데이터 로딩 중...';
   try{
-    var resp=await fetch('../data/rankings.csv');
+    var resp=await fetch('data/rankings.csv');
     if(!resp.ok) throw new Error('no csv');
     var text=await resp.text();
     var parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
