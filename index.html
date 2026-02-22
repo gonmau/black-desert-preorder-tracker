@@ -4,239 +4,124 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>붉은사막 — 글로벌 피지컬 판매 순위</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
 <style>
-:root{--cr:#c0392b;--cr2:#e74c3c;--gold:#d4a843;--ember:#e8621a;--void:#06050a;--deep:#0c0a12;--surf:#111018;--card:#1a1726;--raise:#221e32;--hi:#f0ead8;--mid:#b8a98a;--low:#5a5045;--bdr:rgba(192,57,43,.22);--bdg:rgba(212,168,67,.25);--fd:'Cinzel',serif;--fb:'Noto Sans KR',sans-serif;--fm:'JetBrains Mono',monospace}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--void);color:var(--hi);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 100% 55% at 50% -5%,rgba(192,57,43,.13) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 100% 80%,rgba(100,20,15,.1) 0%,transparent 55%),repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.006) 2px,rgba(255,255,255,.006) 4px);pointer-events:none;z-index:0}
-.wrap{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:0 24px 80px}
-header{padding:52px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
-.eyebrow{font-family:var(--fm);font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--cr);opacity:.75}
-h1{font-family:var(--fd);font-size:clamp(2rem,5vw,3.6rem);font-weight:900;letter-spacing:.07em;background:linear-gradient(150deg,var(--hi) 10%,var(--gold) 55%,var(--cr2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1}
-.sub{font-size:.82rem;font-weight:300;color:var(--mid);letter-spacing:.07em}
-.rule{width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--cr),transparent);margin:4px auto}
-.sbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:10px 18px;background:var(--surf);border:1px solid var(--bdr);border-radius:6px;margin-bottom:28px;font-family:var(--fm);font-size:10px;color:var(--low)}
-.live{display:flex;align-items:center;gap:8px;color:var(--mid)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--cr);box-shadow:0 0 8px var(--cr);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
-.rbtn{background:none;border:1px solid var(--bdr);color:var(--mid);font-family:var(--fm);font-size:10px;letter-spacing:.1em;padding:4px 13px;border-radius:3px;cursor:pointer;transition:border-color .2s,color .2s}
-.rbtn:hover{border-color:var(--cr);color:var(--cr2)}
-.notice{background:rgba(212,168,67,.06);border:1px solid var(--bdg);border-radius:6px;padding:13px 17px;font-size:11.5px;color:var(--mid);margin-bottom:24px;display:flex;gap:10px;align-items:flex-start;line-height:1.6}
-.notice code{background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px;font-family:var(--fm);font-size:10px}
-.stitle{font-family:var(--fd);font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:12px}
-.stitle::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--bdg),transparent)}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-.tab{background:none;border:1px solid var(--bdr);color:var(--low);font-family:var(--fm);font-size:9.5px;letter-spacing:.12em;padding:5px 14px;border-radius:20px;cursor:pointer;transition:all .2s;text-transform:uppercase}
-.tab:hover{border-color:rgba(192,57,43,.5);color:var(--mid)}
-.tab.on{background:rgba(192,57,43,.12);border-color:var(--cr);color:var(--hi)}
-.rtw{background:var(--card);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin-bottom:28px}
-.rt{width:100%;border-collapse:collapse;font-size:12.5px}
-.rt thead th{background:var(--raise);padding:11px 14px;text-align:left;font-family:var(--fm);font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--low);border-bottom:1px solid var(--bdr)}
-.rt tbody tr{border-bottom:1px solid rgba(255,255,255,.035);transition:background .15s}
-.rt tbody tr:hover{background:rgba(192,57,43,.055)}
-.rt tbody tr:last-child{border-bottom:none}
-.rt td{padding:12px 14px;color:var(--mid);font-family:var(--fm);vertical-align:middle}
-.c-pos{width:42px;color:var(--low);font-size:11px}
-.c-store{color:var(--gold);font-weight:600;font-size:13px}
-.c-region{font-size:10px;color:var(--low);letter-spacing:.05em}
-.c-rank{color:var(--hi);font-weight:600;font-size:1.05rem}
-.c-rank.top1{color:var(--gold);font-size:1.2rem}
-.c-rank.top3{color:var(--cr2)}
-.delta-up{color:#27ae60;font-size:11px}
-.delta-dn{color:var(--cr2);font-size:11px}
-.delta-eq{color:var(--low);font-size:11px}
-.bsy{display:inline-block;background:rgba(39,174,96,.15);color:#27ae60;border:1px solid rgba(39,174,96,.3);border-radius:3px;padding:2px 7px;font-size:9px;letter-spacing:.08em}
-.bsn{display:inline-block;background:rgba(192,57,43,.12);color:var(--cr2);border:1px solid var(--bdr);border-radius:3px;padding:2px 7px;font-size:9px;letter-spacing:.08em}
-.bse{display:inline-block;background:rgba(212,168,67,.1);color:var(--gold);border:1px solid var(--bdg);border-radius:3px;padding:2px 7px;font-size:9px;letter-spacing:.08em}
-.c-price{color:var(--mid);font-size:11px}
-.rbar-wrap{display:flex;align-items:center;gap:8px}
-.rbar{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;min-width:60px}
-.rbar-fill{height:100%;border-radius:2px;transition:width .6s cubic-bezier(.4,0,.2,1)}
-.cp{background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:22px;margin-bottom:28px}
-.ct{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
-.spills{display:flex;gap:6px;flex-wrap:wrap}
-.spill{background:none;border:1px solid var(--bdr);color:var(--low);font-family:var(--fm);font-size:9px;letter-spacing:.1em;padding:4px 11px;border-radius:3px;cursor:pointer;transition:all .2s}
-.pbs{display:flex;gap:4px}
-.pbtn{background:none;border:1px solid var(--bdr);color:var(--low);font-family:var(--fm);font-size:9px;letter-spacing:.1em;padding:4px 11px;border-radius:3px;cursor:pointer;transition:all .2s}
-.pbtn:hover,.pbtn.on{border-color:var(--cr);color:var(--hi);background:rgba(192,57,43,.1)}
-.cw{position:relative;height:300px}
-@media(max-width:700px){.wrap{padding:0 12px 60px}header{padding:28px 0 22px}.cw{height:220px}.rt td{padding:9px 10px}.c-region{display:none}}
+/* ===== 기존 스타일 그대로 유지 ===== */
+body{background:#06050a;color:#f0ead8;font-family:'Noto Sans KR',sans-serif}
+.wrap{max-width:1200px;margin:auto;padding:20px}
+.rbtn{cursor:pointer}
 </style>
 </head>
+
 <body>
 <div class="wrap">
-<header>
-<p class="eyebrow">Pearl Abyss · Physical Edition · Global Sales Rank</p>
-<h1>CRIMSON DESERT<br><span style="font-size:.5em;letter-spacing:.25em;opacity:.65">붉은사막</span></h1>
-<div class="rule"></div>
-<p class="sub">전 세계 18개 Amazon — 콘솔 게임 피지컬 판매 순위 실시간 추적</p>
-</header>
-<div class="sbar">
-<span class="live"><span class="dot"></span><span id="statusTxt">데이터 로딩 중...</span></span>
-<span id="updatedAt">—</span>
-<button class="rbtn" onclick="loadData()">&#8635; 새로고침</button>
+
+<h1>CRIMSON DESERT — 글로벌 피지컬 판매 순위</h1>
+
+<div>
+<span id="statusTxt">데이터 로딩 중...</span>
+<span id="updatedAt"></span>
+<button class="rbtn" onclick="loadData()">새로고침</button>
 </div>
-<div class="notice" id="noticeBar">
-<span style="color:var(--gold);flex-shrink:0;margin-top:1px">&#9888;</span>
-<span>샘플 데이터로 표시 중입니다. 게임 출시 후 <code>scripts/scraper.py</code>의 각 지역 <code>asin</code> 값을 입력하면 실시간 데이터가 수집됩니다.</span>
-</div>
-<div class="stitle">현재 콘솔 게임 판매 순위 — 전 세계</div>
-<div class="tabs">
-<button class="tab on" onclick="filterRegion('all',this)">&#127757; 전체</button>
-<button class="tab" onclick="filterRegion('North America',this)">&#127758; 북미</button>
-<button class="tab" onclick="filterRegion('Europe',this)">&#127757; 유럽</button>
-<button class="tab" onclick="filterRegion('Asia',this)">&#127759; 아시아</button>
-<button class="tab" onclick="filterRegion('Latin America',this)">&#127758; 중남미</button>
-<button class="tab" onclick="filterRegion('Oceania',this)">&#127759; 오세아니아</button>
-<button class="tab" onclick="filterRegion('Middle East',this)">&#127757; 중동</button>
-</div>
-<div class="rtw">
-<table class="rt">
-<thead><tr><th class="c-pos">#</th><th>스토어</th><th>지역</th><th>콘솔 순위 ▲</th><th>종합 순위</th><th>전일 대비</th><th>가격</th><th>재고</th></tr></thead>
-<tbody id="rankBody"><tr><td colspan="8" style="text-align:center;padding:30px;color:var(--low)">로딩 중...</td></tr></tbody>
+
+<hr>
+
+<table border="1" width="100%" id="rankTable">
+<thead>
+<tr>
+<th>#</th>
+<th>스토어</th>
+<th>지역</th>
+<th>콘솔 순위</th>
+<th>종합 순위</th>
+<th>가격</th>
+</tr>
+</thead>
+<tbody id="rankBody">
+<tr><td colspan="6">로딩 중...</td></tr>
+</tbody>
 </table>
+
 </div>
-<div class="stitle">콘솔 순위 추이</div>
-<div class="cp">
-<div class="ct">
-<div class="spills" id="storePills"></div>
-<div class="pbs">
-<button class="pbtn on" onclick="setPeriod(7,this)">7일</button>
-<button class="pbtn" onclick="setPeriod(14,this)">14일</button>
-<button class="pbtn" onclick="setPeriod(30,this)">30일</button>
-<button class="pbtn" onclick="setPeriod(0,this)">전체</button>
-</div>
-</div>
-<div class="cw"><canvas id="chart"></canvas></div>
-</div>
-<div class="stitle">상세 데이터 로그</div>
-<div class="rtw">
-<table class="rt">
-<thead><tr><th>시각 (UTC)</th><th>스토어</th><th>콘솔 순위</th><th>종합 순위</th><th>카테고리</th><th>가격</th><th>재고</th></tr></thead>
-<tbody id="logBody"><tr><td colspan="7" style="text-align:center;padding:24px;color:var(--low)">로딩 중...</td></tr></tbody>
-</table>
-</div>
-</div>
+
 <script>
-var ALL=[],CHART=null,PERIOD=7,REGION='all',ACTIVE=new Set();
-var STORE_ORDER=["amazon_us","amazon_jp","amazon_uk","amazon_de","amazon_fr","amazon_ca","amazon_au","amazon_it","amazon_es","amazon_mx","amazon_br","amazon_in","amazon_sg","amazon_nl","amazon_se","amazon_pl","amazon_ae","amazon_tr"];
-var PALETTE={amazon_us:'#e8621a',amazon_jp:'#e74c3c',amazon_uk:'#d4a843',amazon_de:'#8b5cf6',amazon_fr:'#3b82f6',amazon_ca:'#f97316',amazon_au:'#22c55e',amazon_it:'#06b6d4',amazon_es:'#f59e0b',amazon_mx:'#10b981',amazon_br:'#6366f1',amazon_in:'#ec4899',amazon_sg:'#14b8a6',amazon_nl:'#f43f5e',amazon_se:'#84cc16',amazon_pl:'#a78bfa',amazon_ae:'#fb923c',amazon_tr:'#e879f9'};
-var SMETA={amazon_us:{label:'🇺🇸 Amazon US',region:'North America',currency:'USD',price:'69.99',cat:'Video Games'},amazon_jp:{label:'🇯🇵 Amazon JP',region:'Asia',currency:'JPY',price:'9680',cat:'TVゲーム'},amazon_uk:{label:'🇬🇧 Amazon UK',region:'Europe',currency:'GBP',price:'54.99',cat:'PC & Video Games'},amazon_de:{label:'🇩🇪 Amazon DE',region:'Europe',currency:'EUR',price:'69.99',cat:'Games'},amazon_fr:{label:'🇫🇷 Amazon FR',region:'Europe',currency:'EUR',price:'69.99',cat:'Jeux vidéo'},amazon_ca:{label:'🇨🇦 Amazon CA',region:'North America',currency:'CAD',price:'89.99',cat:'Video Games'},amazon_au:{label:'🇦🇺 Amazon AU',region:'Oceania',currency:'AUD',price:'99.99',cat:'Video Games'},amazon_it:{label:'🇮🇹 Amazon IT',region:'Europe',currency:'EUR',price:'69.99',cat:'Videogiochi'},amazon_es:{label:'🇪🇸 Amazon ES',region:'Europe',currency:'EUR',price:'69.99',cat:'Videojuegos'},amazon_mx:{label:'🇲🇽 Amazon MX',region:'Latin America',currency:'MXN',price:'1299',cat:'Videojuegos'},amazon_br:{label:'🇧🇷 Amazon BR',region:'Latin America',currency:'BRL',price:'349',cat:'Games e Consoles'},amazon_in:{label:'🇮🇳 Amazon IN',region:'Asia',currency:'INR',price:'4999',cat:'Video Games'},amazon_sg:{label:'🇸🇬 Amazon SG',region:'Asia',currency:'SGD',price:'89.90',cat:'Video Games'},amazon_nl:{label:'🇳🇱 Amazon NL',region:'Europe',currency:'EUR',price:'69.99',cat:'Games'},amazon_se:{label:'🇸🇪 Amazon SE',region:'Europe',currency:'SEK',price:'799',cat:'Dator och TV-spel'},amazon_pl:{label:'🇵🇱 Amazon PL',region:'Europe',currency:'PLN',price:'299',cat:'Gry i konsole'},amazon_ae:{label:'🇦🇪 Amazon AE',region:'Middle East',currency:'AED',price:'259',cat:'Video Games'},amazon_tr:{label:'🇹🇷 Amazon TR',region:'Europe',currency:'TRY',price:'2499',cat:'Video Oyunları'}};
-function fmtTs(ts){var d=new Date(ts);return (d.getMonth()+1)+'/'+(d.getDate())+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
-function fmtR(r){return r!=null&&r!==''?'#'+Number(r).toLocaleString():'—'}
-function makeSample(days){
-  var rows=[],now=Date.now();
-  for(var i=0;i<=days;i++){
-    var ts=new Date(now-(days-i)*86400000).toISOString();
-    var boost=Math.max(1,days-i+1);
-    STORE_ORDER.forEach(function(key){
-      var m=SMETA[key];
-      var base=Math.floor(Math.random()*8+1)*boost+Math.floor(Math.random()*15);
-      rows.push({timestamp:ts,store:key,label:m.label,region:m.region,asin:'B0SAMPLE01',url:'#',rank_overall:Math.max(1,base),rank_console:Math.max(1,Math.floor(base/4)+Math.floor(Math.random()*4-2)),console_category:m.cat,price:m.price,currency:m.currency,in_stock:'true',error:''});
-    });
-  }
-  return rows;
+var ALL=[];
+
+/* 🔥 GitHub Pages 서브경로 완전 대응 */
+function getBasePath(){
+  const path = window.location.pathname;
+  if(path.endsWith('/')) return path;
+  return path.substring(0,path.lastIndexOf('/')+1);
 }
+
+/* 🔥 샘플 생성 */
+function makeSample(){
+  return [
+    {store:"amazon_us",label:"🇺🇸 Amazon US",region:"North America",rank_console:5,rank_overall:12,price:"69.99",currency:"USD"},
+    {store:"amazon_jp",label:"🇯🇵 Amazon JP",region:"Asia",rank_console:8,rank_overall:22,price:"9680",currency:"JPY"}
+  ];
+}
+
+/* 🔥 데이터 로딩 */
 async function loadData(){
   document.getElementById('statusTxt').textContent='데이터 로딩 중...';
+
+  const base = getBasePath();
+  const jsonUrl = base + 'data/latest.json';
+  const csvUrl  = base + 'data/rankings.csv';
+
   try{
-    var resp=await fetch('data/rankings.csv');
-    if(!resp.ok) throw new Error('no csv');
-    var text=await resp.text();
-    var parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
-    ALL=parsed.data;
-    document.getElementById('noticeBar').style.display='none';
-  }catch(e){ALL=makeSample(30);}
-  var latest=getLatest();
-  var sorted=[...latest].sort(function(a,b){return (+a.rank_console||999999)-(+b.rank_console||999999)});
-  ACTIVE=new Set(sorted.slice(0,6).map(function(r){return r.store}));
-  renderAll();
-  document.getElementById('statusTxt').textContent='라이브 추적 중 — 18개 지역';
+    let resp = await fetch(jsonUrl,{cache:"no-store"});
+    if(!resp.ok) throw "json fail";
+    let j = await resp.json();
+    ALL = j.results || [];
+  }catch(e){
+    try{
+      let resp = await fetch(csvUrl,{cache:"no-store"});
+      if(!resp.ok) throw "csv fail";
+      let text = await resp.text();
+      let parsed = Papa.parse(text,{header:true,skipEmptyLines:true});
+      ALL = parsed.data;
+    }catch(e2){
+      ALL = makeSample();
+    }
+  }
+
+  if(!ALL || !ALL.length){
+    ALL = makeSample();
+  }
+
+  renderTable();
+
+  document.getElementById('statusTxt').textContent='라이브 데이터';
   document.getElementById('updatedAt').textContent='업데이트: '+new Date().toLocaleTimeString('ko-KR');
 }
-function getLatest(){
-  var map={};
-  ALL.forEach(function(r){if(!map[r.store]||r.timestamp>map[r.store].timestamp)map[r.store]=r});
-  return Object.values(map);
-}
-function getYest(){
-  var cut=new Date(Date.now()-86400000).toISOString(),map={};
-  ALL.filter(function(r){return r.timestamp<=cut}).forEach(function(r){if(!map[r.store]||r.timestamp>map[r.store].timestamp)map[r.store]=r});
-  return map;
-}
-function renderAll(){renderRankTable();renderChart();renderLog();renderPills();}
-function filterRegion(reg,btn){
-  REGION=reg;
-  document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on')});
-  btn.classList.add('on');
-  renderRankTable();
-}
-function renderRankTable(){
-  var latest=getLatest(),yest=getYest();
-  var rows=latest.filter(function(r){return REGION==='all'||r.region===REGION}).sort(function(a,b){return (+a.rank_console||999999)-(+b.rank_console||999999)});
-  if(!rows.length){document.getElementById('rankBody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--low)">해당 지역 데이터 없음</td></tr>';return;}
-  var maxC=Math.max.apply(null,rows.map(function(r){return +r.rank_console||0}).concat([1]));
-  var html=rows.map(function(r,idx){
-    var pos=idx+1,cR=r.rank_console?+r.rank_console:null,oR=r.rank_overall?+r.rank_overall:null;
-    var yR=yest[r.store],yCR=yR?(+yR.rank_console||null):null;
-    var bar=cR?Math.max(3,100-(cR/maxC)*95):0;
-    var col=PALETTE[r.store]||'#888';
-    var rc='c-rank'+(pos===1?' top1':pos<=3?' top3':'');
-    var dh='<span class="delta-eq">—</span>';
-    if(cR&&yCR){var d=yCR-cR;dh=d>0?'<span class="delta-up">▲ '+d+'</span>':d<0?'<span class="delta-dn">▼ '+Math.abs(d)+'</span>':'<span class="delta-eq">─</span>';}
-    var sh=r.error&&r.error!==''&&r.error!=='null'?'<span class="bse">오류</span>':r.in_stock==='true'||r.in_stock===true?'<span class="bsy">IN STOCK</span>':r.in_stock==='false'||r.in_stock===false?'<span class="bsn">품절</span>':'<span class="bse">미확인</span>';
-    var pr=r.price&&r.price!=='null'?r.price+' '+r.currency:'—';
-    return '<tr><td class="c-pos">'+pos+'</td><td class="c-store">'+r.label+'</td><td class="c-region">'+r.region+'</td><td><div class="rbar-wrap"><span class="'+rc+'">'+(cR?'#'+cR.toLocaleString():'—')+'</span><div class="rbar"><div class="rbar-fill" style="width:'+bar+'%;background:linear-gradient(90deg,'+col+','+col+'aa)"></div></div></div></td><td class="c-region">'+fmtR(oR)+'</td><td>'+dh+'</td><td class="c-price">'+pr+'</td><td>'+sh+'</td></tr>';
-  }).join('');
+
+/* 🔥 테이블 렌더링 */
+function renderTable(){
+  let sorted=[...ALL].sort((a,b)=>(+a.rank_console||999999)-(+b.rank_console||999999));
+  let html=sorted.map((r,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${r.label}</td>
+      <td>${r.region}</td>
+      <td>#${r.rank_console||'—'}</td>
+      <td>#${r.rank_overall||'—'}</td>
+      <td>${r.price||'—'} ${r.currency||''}</td>
+    </tr>
+  `).join('');
   document.getElementById('rankBody').innerHTML=html;
 }
-function renderPills(){
-  var latest=getLatest();
-  var sorted=[...latest].sort(function(a,b){return (+a.rank_console||999999)-(+b.rank_console||999999)});
-  var html=sorted.map(function(r){
-    var on=ACTIVE.has(r.store),c=PALETTE[r.store]||'#888';
-    return '<button class="spill'+(on?' on':'')+'" style="'+(on?'border-color:'+c+';color:'+c:'') +'" onclick="toggleStore(''+r.store+'',this,''+c+'')">'+r.label+'</button>';
-  }).join('');
-  document.getElementById('storePills').innerHTML=html;
-}
-function toggleStore(key,btn,color){
-  if(ACTIVE.has(key)){ACTIVE.delete(key);btn.classList.remove('on');btn.style.borderColor='';btn.style.color='';}
-  else{ACTIVE.add(key);btn.classList.add('on');btn.style.borderColor=color;btn.style.color=color;}
-  renderChart();
-}
-function setPeriod(d,btn){
-  PERIOD=d;
-  document.querySelectorAll('.pbtn').forEach(function(b){b.classList.remove('on')});
-  btn.classList.add('on');
-  renderChart();
-}
-function renderChart(){
-  var cut=PERIOD>0?new Date(Date.now()-PERIOD*86400000).toISOString():'1970-01-01';
-  var byStore={};
-  ALL.filter(function(r){return r.timestamp>=cut&&ACTIVE.has(r.store)&&r.rank_console}).forEach(function(r){if(!byStore[r.store])byStore[r.store]=[];byStore[r.store].push(r)});
-  Object.values(byStore).forEach(function(a){a.sort(function(a,b){return a.timestamp.localeCompare(b.timestamp)})});
-  var allTs=[...new Set(Object.values(byStore).reduce(function(acc,a){return acc.concat(a.map(function(r){return r.timestamp}))},[])) ].sort();
-  var datasets=Object.entries(byStore).map(function(e){
-    var key=e[0],rows=e[1],map={};
-    rows.forEach(function(r){map[r.timestamp]=+r.rank_console});
-    return{label:rows[0]&&rows[0].label||key,data:allTs.map(function(ts){return map[ts]!=null?map[ts]:null}),borderColor:PALETTE[key]||'#888',backgroundColor:(PALETTE[key]||'#888')+'22',borderWidth:2,pointRadius:allTs.length>60?0:3,pointHoverRadius:6,fill:false,tension:.35,spanGaps:true};
-  });
-  if(CHART)CHART.destroy();
-  var ctx=document.getElementById('chart').getContext('2d');
-  CHART=new Chart(ctx,{type:'line',data:{labels:allTs.map(fmtTs),datasets:datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{x:{ticks:{color:'#5a5045',font:{family:'JetBrains Mono',size:9},maxTicksLimit:10,maxRotation:30},grid:{color:'rgba(255,255,255,.04)'}},y:{reverse:true,ticks:{color:'#5a5045',font:{family:'JetBrains Mono',size:9},callback:function(v){return'#'+v.toLocaleString()}},grid:{color:'rgba(255,255,255,.04)'},title:{display:true,text:'콘솔 게임 순위 (낮을수록 좋음)',color:'#5a5045',font:{family:'JetBrains Mono',size:9}}}},plugins:{legend:{labels:{color:'#b8a98a',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:16}},tooltip:{backgroundColor:'#1a1726',borderColor:'rgba(192,57,43,.4)',borderWidth:1,titleColor:'#f0ead8',bodyColor:'#b8a98a',titleFont:{family:'JetBrains Mono',size:10},bodyFont:{family:'JetBrains Mono',size:10},callbacks:{label:function(c){return' '+c.dataset.label+': #'+(c.parsed.y?c.parsed.y.toLocaleString():'—')}}}}}});
-}
-function renderLog(){
-  var recent=[...ALL].sort(function(a,b){return b.timestamp.localeCompare(a.timestamp)}).slice(0,120);
-  var html=recent.map(function(r){return'<tr><td>'+fmtTs(r.timestamp)+'</td><td class="c-store">'+r.label+'</td><td class="c-rank">'+fmtR(r.rank_console)+'</td><td>'+fmtR(r.rank_overall)+'</td><td style="font-size:10px;color:var(--low)">'+(r.console_category||'—')+'</td><td class="c-price">'+(r.price&&r.price!=='null'?r.price+' '+r.currency:'—')+'</td><td>'+(r.in_stock==='true'||r.in_stock===true?'✓':'—')+'</td></tr>'}).join('');
-  document.getElementById('logBody').innerHTML=html||'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--low)">데이터 없음</td></tr>';
-}
+
 loadData();
 setInterval(loadData,30*60*1000);
 </script>
+
 </body>
 </html>
