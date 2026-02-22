@@ -34,8 +34,7 @@ TARGETS = [
         "key": "amazon_uk",
         "label": "🇬🇧 Amazon UK",
         "region": "Europe",
-        # 네가 준 최신 주소
-        "url": "https://www.amazon.co.uk/gp/new-releases/videogames/20862635031/",
+        "url": "https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/ref=zg_bsnr_nav_videogames_2_20862635031",
         "currency": "GBP",
         "search_kw": ["Crimson Desert"]
     },
@@ -43,8 +42,7 @@ TARGETS = [
         "key": "amazon_de",
         "label": "🇩🇪 Amazon DE",
         "region": "Europe",
-        # 네가 준 최신 주소
-        "url": "https://www.amazon.de/gp/new-releases/videogames/20904927031/",
+        "url": "https://www.amazon.de/-/en/gp/new-releases/videogames/20904927031/ref=zg_bsnr_unv_videogames_2_20904943031_2",
         "currency": "EUR",
         "search_kw": ["Crimson Desert"]
     },
