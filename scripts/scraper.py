@@ -12,17 +12,22 @@ from bs4 import BeautifulSoup
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# ===== 추적 대상 =====
 TARGETS = [
-    {"key":"amazon_us","label":"🇺🇸 Amazon US","region":"North America",
-     "url":"https://www.amazon.com/gp/new-releases/videogames/20972797011/","currency":"USD"},
-    {"key":"amazon_jp","label":"🇯🇵 Amazon JP","region":"Asia",
-     "url":"https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/","currency":"JPY"},
-    {"key":"amazon_uk","label":"🇬🇧 Amazon UK","region":"Europe",
-     "url":"https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/","currency":"GBP"},
-    {"key":"amazon_de","label":"🇩🇪 Amazon DE","region":"Europe",
-     "url":"https://www.amazon.de/gp/new-releases/videogames/20904927031/","currency":"EUR"},
-    {"key":"amazon_fr","label":"🇫🇷 Amazon FR","region":"Europe",
-     "url":"https://www.amazon.fr/gp/new-releases/videogames/20904206031/","currency":"EUR"},
+    {"key":"amazon_us","label":"US Amazon US","region":"North America",
+     "url":"https://www.amazon.com/gp/new-releases/videogames/20972797011/","currency":"USD","tz":"America/New_York"},
+
+    {"key":"amazon_jp","label":"JP Amazon JP","region":"Asia",
+     "url":"https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/","currency":"JPY","tz":"Asia/Tokyo"},
+
+    {"key":"amazon_uk","label":"GB Amazon UK","region":"Europe",
+     "url":"https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/","currency":"GBP","tz":"Europe/London"},
+
+    {"key":"amazon_de","label":"DE Amazon DE","region":"Europe",
+     "url":"https://www.amazon.de/gp/new-releases/videogames/20904927031/","currency":"EUR","tz":"Europe/Berlin"},
+
+    {"key":"amazon_fr","label":"FR Amazon FR","region":"Europe",
+     "url":"https://www.amazon.fr/gp/new-releases/videogames/20904206031/","currency":"EUR","tz":"Europe/Paris"},
 ]
 
 DATA_DIR = Path(__file__).parent.parent / "data"
@@ -41,7 +46,7 @@ FIELDNAMES = [
 ]
 
 
-async def scrape_page(page, cfg):
+async def scrape_store(playwright, cfg):
 
     result = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -55,28 +60,68 @@ async def scrape_page(page, cfg):
         "error": None
     }
 
+    browser = await playwright.chromium.launch(headless=True)
+
+    context = await browser.new_context(
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        locale="en-US",
+        timezone_id=cfg["tz"]
+    )
+
+    page = await context.new_page()
+
     try:
-        await page.goto(cfg["url"], timeout=60000)
-        await page.wait_for_timeout(5000)
+        await page.goto(cfg["url"], timeout=60000, wait_until="domcontentloaded")
+        await page.wait_for_timeout(7000)
 
-        content = await page.content()
-        soup = BeautifulSoup(content, "html.parser")
+        # 로그인/차단 감지
+        if "signin" in page.url or "ap/signin" in page.url:
+            result["error"] = "Blocked / Login required"
+            await browser.close()
+            return result
 
-        items = soup.select("[id^='p13n-asin-index-']")
+        html = await page.content()
+        soup = BeautifulSoup(html, "html.parser")
+
+        # 다중 DOM 대응
+        items = soup.select(
+            "[id^='p13n-asin-index-'], "
+            ".zg-grid-general-faceout, "
+            ".p13n-grid-content"
+        )
+
+        if not items:
+            result["error"] = "Ranking list not found"
+            await browser.close()
+            return result
 
         for idx, item in enumerate(items, 1):
-            img = item.select_one("img")
-            if not img:
-                continue
 
-            title = img.get("alt", "").lower()
+            title = ""
+
+            img = item.select_one("img")
+            if img:
+                title += img.get("alt","")
+
+            link = item.select_one("a")
+            if link:
+                title += link.get_text()
+
+            title = title.lower()
 
             if any(k in title for k in [
                 "crimson",
                 "クリムゾン",
                 "크림슨"
             ]):
+
                 result["rank_console"] = idx
+
+                price_el = item.select_one(".p13n-sc-price")
+                if price_el:
+                    result["price"] = price_el.get_text(strip=True)
+
+                await browser.close()
                 logger.info(f"{cfg['key']} rank {idx}")
                 return result
 
@@ -85,6 +130,7 @@ async def scrape_page(page, cfg):
     except Exception as e:
         result["error"] = str(e)
 
+    await browser.close()
     return result
 
 
@@ -93,20 +139,11 @@ async def main():
     results = []
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        )
-
-        page = await context.new_page()
-
         for cfg in TARGETS:
             logger.info(f"Scraping {cfg['label']}")
-            res = await scrape_page(page, cfg)
+            res = await scrape_store(p, cfg)
             results.append(res)
-            await asyncio.sleep(random.uniform(5, 10))
-
-        await browser.close()
+            await asyncio.sleep(random.uniform(6, 12))
 
     # CSV 저장
     csv_path = DATA_DIR / "rankings.csv"
