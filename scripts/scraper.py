@@ -23,14 +23,12 @@ TARGETS = [
         "search_kw": ["Crimson Desert"]
     },
     {
-        "key": "amazon_jp",
-        "label": "🇯🇵 Amazon JP",
-        "region": "Asia",
-        # PS5 신제품 기준
-        "url": "https://www.amazon.co.jp/gp/new-releases/videogames/8018155051/",
-        "currency": "JPY",
-        # 일본은 정확한 상품명 포함
-        "search_kw": ["紅の砂漠 -PS5", "紅の砂漠", "Crimson Desert"]
+    "key": "amazon_jp",
+    "label": "🇯🇵 Amazon JP",
+    "region": "Asia",
+    "url": "https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/ref=zg_bs_tab_t_videogames_bsnr",
+    "currency": "JPY",
+    "search_kw": ["紅の砂漠 -PS5", "紅の砂漠", "Crimson Desert"]
     },
     {
         "key": "amazon_uk",
