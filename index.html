@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>붉은사막 — 글로벌 피지컬 판매 순위</title>
+<title>CRIMSON DESERT — 글로벌 피지컬 판매 순위</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
 
 <style>
-/* ===== 기존 스타일 그대로 유지 ===== */
 body{background:#06050a;color:#f0ead8;font-family:'Noto Sans KR',sans-serif}
 .wrap{max-width:1200px;margin:auto;padding:20px}
-.rbtn{cursor:pointer}
+table{border-collapse:collapse;width:100%}
+th,td{padding:10px;border:1px solid #333;text-align:center}
+th{background:#111}
+a{color:#4da3ff;text-decoration:none}
+a:hover{text-decoration:underline}
+.err{color:#ff5a5a}
+.good{color:#3cff8f}
 </style>
 </head>
 
@@ -27,20 +28,20 @@ body{background:#06050a;color:#f0ead8;font-family:'Noto Sans KR',sans-serif}
 <div>
 <span id="statusTxt">데이터 로딩 중...</span>
 <span id="updatedAt"></span>
-<button class="rbtn" onclick="loadData()">새로고침</button>
+<button onclick="loadData()">새로고침</button>
 </div>
 
 <hr>
 
-<table border="1" width="100%" id="rankTable">
+<table>
 <thead>
 <tr>
 <th>#</th>
 <th>스토어</th>
 <th>지역</th>
-<th>콘솔 순위</th>
-<th>종합 순위</th>
+<th>PS5 순위</th>
 <th>가격</th>
+<th>상태</th>
 </tr>
 </thead>
 <tbody id="rankBody">
@@ -51,76 +52,74 @@ body{background:#06050a;color:#f0ead8;font-family:'Noto Sans KR',sans-serif}
 </div>
 
 <script>
-var ALL=[];
 
-/* 🔥 GitHub Pages 서브경로 완전 대응 */
+let ALL=[];
+
 function getBasePath(){
   const path = window.location.pathname;
   if(path.endsWith('/')) return path;
   return path.substring(0,path.lastIndexOf('/')+1);
 }
 
-/* 🔥 샘플 생성 */
-function makeSample(){
-  return [
-    {store:"amazon_us",label:"🇺🇸 Amazon US",region:"North America",rank_console:5,rank_overall:12,price:"69.99",currency:"USD"},
-    {store:"amazon_jp",label:"🇯🇵 Amazon JP",region:"Asia",rank_console:8,rank_overall:22,price:"9680",currency:"JPY"}
-  ];
-}
-
-/* 🔥 데이터 로딩 */
 async function loadData(){
+
   document.getElementById('statusTxt').textContent='데이터 로딩 중...';
 
   const base = getBasePath();
   const jsonUrl = base + 'data/latest.json';
-  const csvUrl  = base + 'data/rankings.csv';
 
   try{
-    let resp = await fetch(jsonUrl,{cache:"no-store"});
-    if(!resp.ok) throw "json fail";
-    let j = await resp.json();
-    ALL = j.results || [];
+    const resp = await fetch(jsonUrl,{cache:"no-store"});
+    if(!resp.ok) throw "fail";
+    ALL = await resp.json();
   }catch(e){
-    try{
-      let resp = await fetch(csvUrl,{cache:"no-store"});
-      if(!resp.ok) throw "csv fail";
-      let text = await resp.text();
-      let parsed = Papa.parse(text,{header:true,skipEmptyLines:true});
-      ALL = parsed.data;
-    }catch(e2){
-      ALL = makeSample();
-    }
-  }
-
-  if(!ALL || !ALL.length){
-    ALL = makeSample();
+    document.getElementById('rankBody').innerHTML =
+      '<tr><td colspan="6">데이터 없음</td></tr>';
+    return;
   }
 
   renderTable();
 
   document.getElementById('statusTxt').textContent='라이브 데이터';
-  document.getElementById('updatedAt').textContent='업데이트: '+new Date().toLocaleTimeString('ko-KR');
+  document.getElementById('updatedAt').textContent=
+    '업데이트: '+new Date().toLocaleTimeString('ko-KR');
 }
 
-/* 🔥 테이블 렌더링 */
 function renderTable(){
-  let sorted=[...ALL].sort((a,b)=>(+a.rank_console||999999)-(+b.rank_console||999999));
-  let html=sorted.map((r,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${r.label}</td>
-      <td>${r.region}</td>
-      <td>#${r.rank_console||'—'}</td>
-      <td>#${r.rank_overall||'—'}</td>
-      <td>${r.price||'—'} ${r.currency||''}</td>
-    </tr>
-  `).join('');
+
+  let sorted=[...ALL]
+    .sort((a,b)=>(+a.rank_console||9999)-(+b.rank_console||9999));
+
+  let html=sorted.map((r,i)=>{
+
+    let status = r.error
+      ? `<span class="err">${r.error}</span>`
+      : `<span class="good">정상</span>`;
+
+    let rank = r.rank_console ? `#${r.rank_console}` : '—';
+
+    return `
+      <tr>
+        <td>${i+1}</td>
+        <td>
+          <a href="${r.store_url}" target="_blank">
+            ${r.label}
+          </a>
+        </td>
+        <td>${r.region}</td>
+        <td>${rank}</td>
+        <td>${r.price||'—'} ${r.currency||''}</td>
+        <td>${status}</td>
+      </tr>
+    `;
+  }).join('');
+
   document.getElementById('rankBody').innerHTML=html;
 }
 
 loadData();
 setInterval(loadData,30*60*1000);
+
 </script>
 
 </body>
