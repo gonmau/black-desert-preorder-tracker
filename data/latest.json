@@ -1,110 +1,55 @@
-{
-  "updated_at": "2026-02-22T13:15:24.250080+00:00",
-  "results": [
-    {
-      "timestamp": "2026-02-22T13:14:14.479438+00:00",
-      "store": "amazon_us",
-      "label": "🇺🇸 Amazon US",
-      "region": "North America",
-      "asin": null,
-      "url": "https://www.amazon.com/gp/new-releases/videogames/20972797011/",
-      "rank_overall": null,
-      "rank_console": 3,
-      "console_category": "PS5 Games",
-      "price": "89.99",
-      "currency": "USD",
-      "in_stock": true,
-      "error": null
-    },
-    {
-      "timestamp": "2026-02-22T13:14:25.669532+00:00",
-      "store": "amazon_jp",
-      "label": "🇯🇵 Amazon JP",
-      "region": "Asia",
-      "asin": null,
-      "url": "https://www.amazon.co.jp/gp/new-releases/videogames/8018155051/",
-      "rank_overall": null,
-      "rank_console": null,
-      "console_category": "PS5 Games",
-      "price": null,
-      "currency": "JPY",
-      "in_stock": null,
-      "error": "Not in top list"
-    },
-    {
-      "timestamp": "2026-02-22T13:14:36.749239+00:00",
-      "store": "amazon_uk",
-      "label": "🇬🇧 Amazon UK",
-      "region": "Europe",
-      "asin": null,
-      "url": "https://www.amazon.co.uk/gp/new-releases/videogames/6763102031/",
-      "rank_overall": null,
-      "rank_console": null,
-      "console_category": "PS5 Games",
-      "price": null,
-      "currency": "GBP",
-      "in_stock": null,
-      "error": "Not in top list"
-    },
-    {
-      "timestamp": "2026-02-22T13:14:48.739826+00:00",
-      "store": "amazon_de",
-      "label": "🇩🇪 Amazon DE",
-      "region": "Europe",
-      "asin": null,
-      "url": "https://www.amazon.de/gp/new-releases/videogames/22741549031/",
-      "rank_overall": null,
-      "rank_console": null,
-      "console_category": "PS5 Games",
-      "price": null,
-      "currency": "EUR",
-      "in_stock": null,
-      "error": "Not in top list"
-    },
-    {
-      "timestamp": "2026-02-22T13:14:57.130874+00:00",
-      "store": "amazon_fr",
-      "label": "🇫🇷 Amazon FR",
-      "region": "Europe",
-      "asin": null,
-      "url": "https://www.amazon.fr/gp/new-releases/videogames/22713180031/",
-      "rank_overall": null,
-      "rank_console": null,
-      "console_category": "PS5 Games",
-      "price": null,
-      "currency": "EUR",
-      "in_stock": null,
-      "error": "Not in top list"
-    },
-    {
-      "timestamp": "2026-02-22T13:15:08.447069+00:00",
-      "store": "amazon_ca",
-      "label": "🇨🇦 Amazon CA",
-      "region": "North America",
-      "asin": null,
-      "url": "https://www.amazon.ca/gp/new-releases/videogames/20995057011/",
-      "rank_overall": null,
-      "rank_console": null,
-      "console_category": "PS5 Games",
-      "price": null,
-      "currency": "CAD",
-      "in_stock": null,
-      "error": "Not in top list"
-    },
-    {
-      "timestamp": "2026-02-22T13:15:15.784680+00:00",
-      "store": "amazon_au",
-      "label": "🇦🇺 Amazon AU",
-      "region": "Oceania",
-      "asin": null,
-      "url": "https://www.amazon.com.au/gp/new-releases/videogames/7132145051/",
-      "rank_overall": null,
-      "rank_console": null,
-      "console_category": "PS5 Games",
-      "price": null,
-      "currency": "AUD",
-      "in_stock": null,
-      "error": "Not in top list"
-    }
-  ]
-}
+import re
+import json
+import csv
+import time
+import random
+import logging
+from datetime import datetime, timezone
+from pathlib import Path
+import requests
+from bs4 import BeautifulSoup
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
+
+# 타겟 국가 설정 (유럽 주요국 포함)
+TARGETS = [
+    {"key":"amazon_us","label":"🇺🇸 Amazon US","url":"https://www.amazon.com/gp/new-releases/videogames/20972797011/","currency":"USD","kw":["Crimson Desert"]},
+    {"key":"amazon_uk","label":"🇬🇧 Amazon UK","url":"https://www.amazon.co.uk/gp/new-releases/videogames/6763102031/","currency":"GBP","kw":["Crimson Desert"]},
+    {"key":"amazon_de","label":"🇩🇪 Amazon DE","url":"https://www.amazon.de/gp/new-releases/videogames/22741549031/","currency":"EUR","kw":["Crimson Desert"]},
+    {"key":"amazon_fr","label":"🇫🇷 Amazon FR","url":"https://www.amazon.fr/gp/new-releases/videogames/22713180031/","currency":"EUR","kw":["Crimson Desert"]},
+    {"key":"amazon_jp","label":"🇯🇵 Amazon JP","url":"https://www.amazon.co.jp/gp/new-releases/videogames/8018155051/","currency":"JPY","kw":["Crimson Desert", "붉은 사막", "紅の砂漠"]},
+    {"key":"amazon_ca","label":"🇨🇦 Amazon CA","url":"https://www.amazon.ca/gp/new-releases/videogames/20995057011/","currency":"CAD","kw":["Crimson Desert"]},
+    {"key":"amazon_au","label":"🇦🇺 Amazon AU","url":"https://www.amazon.com.au/gp/new-releases/videogames/7132145051/","currency":"AUD","kw":["Crimson Desert"]},
+]
+
+HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"}
+
+def scrape_category(cfg):
+    r = {"timestamp": datetime.now(timezone.utc).isoformat(), "store": cfg["key"], "label": cfg["label"], "rank_console": None, "price": None, "currency": cfg["currency"], "error": None}
+    try:
+        resp = requests.get(cfg["url"], headers=HEADERS, timeout=30)
+        if resp.status_code != 200:
+            r["error"] = f"HTTP {resp.status_code}"
+            return r
+        
+        soup = BeautifulSoup(resp.text, "html.parser")
+        # 아마존의 다양한 그리드 아이템 패턴 매칭
+        items = soup.select(".zg-grid-general-faceout, .p13n-grid-content, #gridItemRoot")
+        
+        for idx, item in enumerate(items, 1):
+            txt = item.get_text(" ", strip=True)
+            if any(k.lower() in txt.lower() for k in cfg["kw"]):
+                r["rank_console"] = idx
+                p_el = item.select_one(".p13n-sc-price, .a-color-price")
+                if p_el: r["price"] = re.sub(r'[^\d.]', '', p_el.get_text())
+                break
+        
+        if not r["rank_console"]:
+            r["error"] = "Not in Top 50"
+            logger.info(f"[{cfg['key']}] 붉은사막이 아직 순위권에 없습니다.")
+    except Exception as e:
+        r["error"] = str(e)
+    return r
+
+# (중략) save() 및 run() 로직은 동일
