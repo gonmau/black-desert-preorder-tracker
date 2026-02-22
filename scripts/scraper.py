@@ -14,13 +14,83 @@ logger = logging.getLogger(__name__)
 
 # ─── 타겟 설정 (검색 키워드 강화) ──────────────────
 TARGETS = [
-    {"key":"amazon_us","label":"🇺🇸 Amazon US","region":"North America","url":"https://www.amazon.com/gp/new-releases/videogames/20972797011/","currency":"USD","search_kw":["Crimson Desert"]},
-    {"key":"amazon_jp","label":"🇯🇵 Amazon JP","region":"Asia","url":"https://www.amazon.co.jp/gp/new-releases/videogames/8018155051/","currency":"JPY","search_kw":["Crimson Desert", "붉은 사막", "紅の砂漠"]},
-    {"key":"amazon_uk","label":"🇬🇧 Amazon UK","region":"Europe","url":"https://www.amazon.co.uk/gp/new-releases/videogames/6763102031/","currency":"GBP","search_kw":["Crimson Desert"]},
-    {"key":"amazon_de","label":"🇩🇪 Amazon DE","region":"Europe","url":"https://www.amazon.de/gp/new-releases/videogames/22741549031/","currency":"EUR","search_kw":["Crimson Desert"]},
-    {"key":"amazon_fr","label":"🇫🇷 Amazon FR","region":"Europe","url":"https://www.amazon.fr/gp/new-releases/videogames/22713180031/","currency":"EUR","search_kw":["Crimson Desert"]},
-    {"key":"amazon_ca","label":"🇨🇦 Amazon CA","region":"North America","url":"https://www.amazon.ca/gp/new-releases/videogames/20995057011/","currency":"CAD","search_kw":["Crimson Desert"]},
-    {"key":"amazon_au","label":"🇦🇺 Amazon AU","region":"Oceania","url":"https://www.amazon.com.au/gp/new-releases/videogames/7132145051/","currency":"AUD","search_kw":["Crimson Desert"]},
+    {
+        "key": "amazon_us",
+        "label": "🇺🇸 Amazon US",
+        "region": "North America",
+        "url": "https://www.amazon.com/gp/new-releases/videogames/20972797011/",
+        "currency": "USD",
+        "search_kw": ["Crimson Desert"]
+    },
+    {
+        "key": "amazon_jp",
+        "label": "🇯🇵 Amazon JP",
+        "region": "Asia",
+        # PS5 신제품 기준
+        "url": "https://www.amazon.co.jp/gp/new-releases/videogames/8018155051/",
+        "currency": "JPY",
+        # 일본은 정확한 상품명 포함
+        "search_kw": ["紅の砂漠 -PS5", "紅の砂漠", "Crimson Desert"]
+    },
+    {
+        "key": "amazon_uk",
+        "label": "🇬🇧 Amazon UK",
+        "region": "Europe",
+        # 네가 준 최신 주소
+        "url": "https://www.amazon.co.uk/gp/new-releases/videogames/20862635031/",
+        "currency": "GBP",
+        "search_kw": ["Crimson Desert"]
+    },
+    {
+        "key": "amazon_de",
+        "label": "🇩🇪 Amazon DE",
+        "region": "Europe",
+        # 네가 준 최신 주소
+        "url": "https://www.amazon.de/gp/new-releases/videogames/20904927031/",
+        "currency": "EUR",
+        "search_kw": ["Crimson Desert"]
+    },
+    {
+        "key": "amazon_fr",
+        "label": "🇫🇷 Amazon FR",
+        "region": "Europe",
+        # FR 최신 PS5 신제품 ID 반영
+        "url": "https://www.amazon.fr/gp/new-releases/videogames/20904206031/",
+        "currency": "EUR",
+        "search_kw": ["Crimson Desert"]
+    },
+    {
+        "key": "amazon_it",
+        "label": "🇮🇹 Amazon IT",
+        "region": "Europe",
+        "url": "https://www.amazon.it/gp/new-releases/videogames/20904210031/",
+        "currency": "EUR",
+        "search_kw": ["Crimson Desert"]
+    },
+    {
+        "key": "amazon_es",
+        "label": "🇪🇸 Amazon ES",
+        "region": "Europe",
+        "url": "https://www.amazon.es/gp/new-releases/videogames/20904212031/",
+        "currency": "EUR",
+        "search_kw": ["Crimson Desert"]
+    },
+    {
+        "key": "amazon_ca",
+        "label": "🇨🇦 Amazon CA",
+        "region": "North America",
+        "url": "https://www.amazon.ca/gp/new-releases/videogames/20995057011/",
+        "currency": "CAD",
+        "search_kw": ["Crimson Desert"]
+    },
+    {
+        "key": "amazon_au",
+        "label": "🇦🇺 Amazon AU",
+        "region": "Oceania",
+        "url": "https://www.amazon.com.au/gp/new-releases/videogames/7132145051/",
+        "currency": "AUD",
+        "search_kw": ["Crimson Desert"]
+    },
 ]
 
 HEADERS_POOL = [
