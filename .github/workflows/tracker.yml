@@ -1,41 +1,30 @@
-name: 🎮 Crimson Desert Rank Tracker
+name: Amazon PS5 Tracker
 
 on:
   schedule:
-    # 6시간마다 자동 실행 (한국시간 기준 오전 3시, 9시, 오후 3시, 9시)
-    - cron: "0 */6 * * * "
-  workflow_dispatch:       # 깃허브 상단 버튼으로 수동 실행 가능
-
-permissions:
-  contents: write          # 데이터 파일을 다시 저장(commit)하기 위해 필요
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
 
 jobs:
   scrape:
-    name: Scrape Amazon Rankings
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
-          cache: pip
+          python-version: "3.11"
 
-      - name: Install dependencies
+      - run: pip install -r requirements.txt
+      - run: playwright install chromium
+
+      - run: python scripts/scraper.py
+
+      - name: Commit data
         run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4
-
-      - name: Run scraper
-        run: python scripts/scraper.py
-
-      - name: Commit updated data
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "📊 data: update rankings $(date -u '+%Y-%m-%d %H:%M UTC')"
-          file_pattern: "data/*.csv data/*.json"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/
+          git commit -m "update rankings" || echo "No changes"
+          git push
