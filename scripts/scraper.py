@@ -13,11 +13,16 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 TARGETS = [
-    {"key":"amazon_us","label":"🇺🇸 Amazon US","url":"https://www.amazon.com/gp/new-releases/videogames/20972797011/"},
-    {"key":"amazon_jp","label":"🇯🇵 Amazon JP","url":"https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/"},
-    {"key":"amazon_uk","label":"🇬🇧 Amazon UK","url":"https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/"},
-    {"key":"amazon_de","label":"🇩🇪 Amazon DE","url":"https://www.amazon.de/gp/new-releases/videogames/20904927031/"},
-    {"key":"amazon_fr","label":"🇫🇷 Amazon FR","url":"https://www.amazon.fr/gp/new-releases/videogames/20904206031/"},
+    {"key":"amazon_us","label":"🇺🇸 Amazon US","region":"North America",
+     "url":"https://www.amazon.com/gp/new-releases/videogames/20972797011/","currency":"USD"},
+    {"key":"amazon_jp","label":"🇯🇵 Amazon JP","region":"Asia",
+     "url":"https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/","currency":"JPY"},
+    {"key":"amazon_uk","label":"🇬🇧 Amazon UK","region":"Europe",
+     "url":"https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/","currency":"GBP"},
+    {"key":"amazon_de","label":"🇩🇪 Amazon DE","region":"Europe",
+     "url":"https://www.amazon.de/gp/new-releases/videogames/20904927031/","currency":"EUR"},
+    {"key":"amazon_fr","label":"🇫🇷 Amazon FR","region":"Europe",
+     "url":"https://www.amazon.fr/gp/new-releases/videogames/20904206031/","currency":"EUR"},
 ]
 
 DATA_DIR = Path(__file__).parent.parent / "data"
@@ -35,19 +40,20 @@ FIELDNAMES = [
     "error"
 ]
 
+
 async def scrape_page(page, cfg):
 
-   result = {
-    "timestamp": datetime.now(timezone.utc).isoformat(),
-    "store": cfg["key"],
-    "label": cfg["label"],
-    "region": cfg["region"],
-    "store_url": cfg["url"],
-    "rank_console": None,
-    "price": None,
-    "currency": cfg.get("currency",""),
-    "error": None
-}
+    result = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "store": cfg["key"],
+        "label": cfg["label"],
+        "region": cfg["region"],
+        "store_url": cfg["url"],
+        "rank_console": None,
+        "price": None,
+        "currency": cfg["currency"],
+        "error": None
+    }
 
     try:
         await page.goto(cfg["url"], timeout=60000)
@@ -63,9 +69,9 @@ async def scrape_page(page, cfg):
             if not img:
                 continue
 
-            title = img.get("alt","").lower()
+            title = img.get("alt", "").lower()
 
-           if any(k in title for k in [
+            if any(k in title for k in [
                 "crimson",
                 "クリムゾン",
                 "크림슨"
@@ -98,21 +104,23 @@ async def main():
             logger.info(f"Scraping {cfg['label']}")
             res = await scrape_page(page, cfg)
             results.append(res)
-            await asyncio.sleep(random.uniform(5,10))
+            await asyncio.sleep(random.uniform(5, 10))
 
         await browser.close()
 
+    # CSV 저장
     csv_path = DATA_DIR / "rankings.csv"
     exists = csv_path.exists()
 
-    with open(csv_path,"a",newline="",encoding="utf-8") as f:
+    with open(csv_path, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
         if not exists:
             writer.writeheader()
         writer.writerows(results)
 
-    with open(DATA_DIR / "latest.json","w",encoding="utf-8") as f:
-        json.dump(results,f,indent=2,ensure_ascii=False)
+    # JSON 저장
+    with open(DATA_DIR / "latest.json", "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
 
 
 if __name__ == "__main__":
