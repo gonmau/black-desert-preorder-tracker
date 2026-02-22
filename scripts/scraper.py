@@ -110,8 +110,11 @@ async def scrape_store(playwright, cfg):
             title = title.lower()
 
             if any(k in title for k in [
+                "crimson desert",
                 "crimson",
+                "クリムゾンデザート",
                 "クリムゾン",
+                "紅の砂漠",
                 "크림슨"
             ]):
 
