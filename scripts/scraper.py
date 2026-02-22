@@ -23,17 +23,31 @@ TARGETS = [
 DATA_DIR = Path(__file__).parent.parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
 
-FIELDNAMES = ["timestamp","store","label","rank_console","error"]
+FIELDNAMES = [
+    "timestamp",
+    "store",
+    "label",
+    "region",
+    "store_url",
+    "rank_console",
+    "price",
+    "currency",
+    "error"
+]
 
 async def scrape_page(page, cfg):
 
-    result = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "store": cfg["key"],
-        "label": cfg["label"],
-        "rank_console": None,
-        "error": None
-    }
+   result = {
+    "timestamp": datetime.now(timezone.utc).isoformat(),
+    "store": cfg["key"],
+    "label": cfg["label"],
+    "region": cfg["region"],
+    "store_url": cfg["url"],
+    "rank_console": None,
+    "price": None,
+    "currency": cfg.get("currency",""),
+    "error": None
+}
 
     try:
         await page.goto(cfg["url"], timeout=60000)
@@ -51,7 +65,11 @@ async def scrape_page(page, cfg):
 
             title = img.get("alt","").lower()
 
-            if "crimson" in title:
+           if any(k in title for k in [
+                "crimson",
+                "クリムゾン",
+                "크림슨"
+            ]):
                 result["rank_console"] = idx
                 logger.info(f"{cfg['key']} rank {idx}")
                 return result
