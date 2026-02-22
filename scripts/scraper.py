@@ -23,12 +23,12 @@ TARGETS = [
         "search_kw": ["Crimson Desert"]
     },
     {
-    "key": "amazon_jp",
-    "label": "🇯🇵 Amazon JP",
-    "region": "Asia",
-    "url": "https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/ref=zg_bs_tab_t_videogames_bsnr",
-    "currency": "JPY",
-    "search_kw": ["紅の砂漠 -PS5", "紅の砂漠", "Crimson Desert"]
+        "key": "amazon_jp",
+        "label": "🇯🇵 Amazon JP",
+        "region": "Asia",
+        "url": "https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/ref=zg_bs_tab_t_videogames_bsnr",
+        "currency": "JPY",
+        "search_kw": ["紅の砂漠 -PS5", "紅の砂漠", "Crimson Desert"]
     },
     {
         "key": "amazon_uk",
