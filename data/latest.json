@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-02-22T12:39:53.610118+00:00",
+  "updated_at": "2026-02-22T12:48:08.930181+00:00",
   "results": [
     {
-      "timestamp": "2026-02-22T12:37:52.431988+00:00",
+      "timestamp": "2026-02-22T12:46:07.608401+00:00",
       "store": "amazon_us",
       "label": "🇺🇸 Amazon US",
       "region": "North America",
@@ -17,7 +17,7 @@
       "error": null
     },
     {
-      "timestamp": "2026-02-22T12:38:00.124433+00:00",
+      "timestamp": "2026-02-22T12:46:16.750042+00:00",
       "store": "amazon_jp",
       "label": "🇯🇵 Amazon JP",
       "region": "Asia",
@@ -32,12 +32,12 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:38:06.369172+00:00",
+      "timestamp": "2026-02-22T12:46:24.536000+00:00",
       "store": "amazon_uk",
       "label": "🇬🇧 Amazon UK",
       "region": "Europe",
-      "asin": "B0FSF47H8H",
-      "url": "https://www.amazon.co.uk/dp/B0FSF47H8H",
+      "asin": "B0FSF4YP8B",
+      "url": "https://www.amazon.co.uk/dp/B0FSF4YP8B",
       "rank_overall": null,
       "rank_console": null,
       "console_category": "PC & Video Games",
@@ -47,7 +47,7 @@
       "error": null
     },
     {
-      "timestamp": "2026-02-22T12:38:12.554474+00:00",
+      "timestamp": "2026-02-22T12:46:33.956754+00:00",
       "store": "amazon_de",
       "label": "🇩🇪 Amazon DE",
       "region": "Europe",
@@ -62,7 +62,7 @@
       "error": null
     },
     {
-      "timestamp": "2026-02-22T12:38:20.074378+00:00",
+      "timestamp": "2026-02-22T12:46:40.060553+00:00",
       "store": "amazon_fr",
       "label": "🇫🇷 Amazon FR",
       "region": "Europe",
@@ -77,7 +77,7 @@
       "error": null
     },
     {
-      "timestamp": "2026-02-22T12:38:26.898277+00:00",
+      "timestamp": "2026-02-22T12:46:45.660094+00:00",
       "store": "amazon_ca",
       "label": "🇨🇦 Amazon CA",
       "region": "North America",
@@ -92,7 +92,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:38:34.663240+00:00",
+      "timestamp": "2026-02-22T12:46:49.857847+00:00",
       "store": "amazon_au",
       "label": "🇦🇺 Amazon AU",
       "region": "Oceania",
@@ -107,7 +107,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:38:41.214297+00:00",
+      "timestamp": "2026-02-22T12:46:55.837182+00:00",
       "store": "amazon_it",
       "label": "🇮🇹 Amazon IT",
       "region": "Europe",
@@ -122,7 +122,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:38:47.585372+00:00",
+      "timestamp": "2026-02-22T12:47:03.622975+00:00",
       "store": "amazon_es",
       "label": "🇪🇸 Amazon ES",
       "region": "Europe",
@@ -137,7 +137,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:38:54.291051+00:00",
+      "timestamp": "2026-02-22T12:47:11.529816+00:00",
       "store": "amazon_mx",
       "label": "🇲🇽 Amazon MX",
       "region": "Latin America",
@@ -152,7 +152,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:00.484564+00:00",
+      "timestamp": "2026-02-22T12:47:16.209573+00:00",
       "store": "amazon_br",
       "label": "🇧🇷 Amazon BR",
       "region": "Latin America",
@@ -167,7 +167,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:07.282618+00:00",
+      "timestamp": "2026-02-22T12:47:23.334353+00:00",
       "store": "amazon_in",
       "label": "🇮🇳 Amazon IN",
       "region": "Asia",
@@ -182,7 +182,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:12.912564+00:00",
+      "timestamp": "2026-02-22T12:47:30.018229+00:00",
       "store": "amazon_sg",
       "label": "🇸🇬 Amazon SG",
       "region": "Asia",
@@ -197,7 +197,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:20.719148+00:00",
+      "timestamp": "2026-02-22T12:47:34.899993+00:00",
       "store": "amazon_nl",
       "label": "🇳🇱 Amazon NL",
       "region": "Europe",
@@ -212,7 +212,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:26.191094+00:00",
+      "timestamp": "2026-02-22T12:47:41.788511+00:00",
       "store": "amazon_se",
       "label": "🇸🇪 Amazon SE",
       "region": "Europe",
@@ -227,7 +227,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:33.984736+00:00",
+      "timestamp": "2026-02-22T12:47:47.728502+00:00",
       "store": "amazon_pl",
       "label": "🇵🇱 Amazon PL",
       "region": "Europe",
@@ -242,7 +242,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:40.370120+00:00",
+      "timestamp": "2026-02-22T12:47:55.440556+00:00",
       "store": "amazon_ae",
       "label": "🇦🇪 Amazon AE",
       "region": "Middle East",
@@ -257,7 +257,7 @@
       "error": "ASIN not configured"
     },
     {
-      "timestamp": "2026-02-22T12:39:44.959071+00:00",
+      "timestamp": "2026-02-22T12:48:03.697765+00:00",
       "store": "amazon_tr",
       "label": "🇹🇷 Amazon TR",
       "region": "Europe",
