@@ -21,7 +21,7 @@ Amazon 4개 지역(US, JP, UK, DE)의 붉은사막 피지컬 에디션 판매 �
 
 ### 1. 레포지토리 클론
 ```bash
-git clone https://github.com/YOUR_USERNAME/crimson-desert-tracker.git
+git clone https://github.com/YOUR_USERNAME/black-desert-preorder-tracker.git
 cd crimson-desert-tracker
 pip install -r requirements.txt
 ```
