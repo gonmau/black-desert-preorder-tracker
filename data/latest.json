@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-02-22T13:23:07.270543+00:00",
+  "updated_at": "2026-02-22T13:40:38.818311+00:00",
   "results": [
     {
-      "timestamp": "2026-02-22T13:21:57.737133+00:00",
+      "timestamp": "2026-02-22T13:39:09.978287+00:00",
       "store": "amazon_us",
       "label": "🇺🇸 Amazon US",
       "region": "North America",
@@ -17,7 +17,7 @@
       "error": null
     },
     {
-      "timestamp": "2026-02-22T13:22:07.366078+00:00",
+      "timestamp": "2026-02-22T13:39:22.274835+00:00",
       "store": "amazon_jp",
       "label": "🇯🇵 Amazon JP",
       "region": "Asia",
@@ -32,12 +32,12 @@
       "error": "Not in top list"
     },
     {
-      "timestamp": "2026-02-22T13:22:18.234821+00:00",
+      "timestamp": "2026-02-22T13:39:32.005179+00:00",
       "store": "amazon_uk",
       "label": "🇬🇧 Amazon UK",
       "region": "Europe",
       "asin": null,
-      "url": "https://www.amazon.co.uk/gp/new-releases/videogames/6763102031/",
+      "url": "https://www.amazon.co.uk/gp/new-releases/videogames/20862635031/",
       "rank_overall": null,
       "rank_console": null,
       "console_category": "PS5 Games",
@@ -47,12 +47,12 @@
       "error": "Not in top list"
     },
     {
-      "timestamp": "2026-02-22T13:22:29.404443+00:00",
+      "timestamp": "2026-02-22T13:39:40.975454+00:00",
       "store": "amazon_de",
       "label": "🇩🇪 Amazon DE",
       "region": "Europe",
       "asin": null,
-      "url": "https://www.amazon.de/gp/new-releases/videogames/22741549031/",
+      "url": "https://www.amazon.de/gp/new-releases/videogames/20904927031/",
       "rank_overall": null,
       "rank_console": null,
       "console_category": "PS5 Games",
@@ -62,12 +62,12 @@
       "error": "Not in top list"
     },
     {
-      "timestamp": "2026-02-22T13:22:38.683109+00:00",
+      "timestamp": "2026-02-22T13:39:53.051068+00:00",
       "store": "amazon_fr",
       "label": "🇫🇷 Amazon FR",
       "region": "Europe",
       "asin": null,
-      "url": "https://www.amazon.fr/gp/new-releases/videogames/22713180031/",
+      "url": "https://www.amazon.fr/gp/new-releases/videogames/20904206031/",
       "rank_overall": null,
       "rank_console": null,
       "console_category": "PS5 Games",
@@ -77,7 +77,37 @@
       "error": "Not in top list"
     },
     {
-      "timestamp": "2026-02-22T13:22:51.548341+00:00",
+      "timestamp": "2026-02-22T13:40:01.483508+00:00",
+      "store": "amazon_it",
+      "label": "🇮🇹 Amazon IT",
+      "region": "Europe",
+      "asin": null,
+      "url": "https://www.amazon.it/gp/new-releases/videogames/20904210031/",
+      "rank_overall": null,
+      "rank_console": null,
+      "console_category": "PS5 Games",
+      "price": null,
+      "currency": "EUR",
+      "in_stock": null,
+      "error": "Not in top list"
+    },
+    {
+      "timestamp": "2026-02-22T13:40:12.025282+00:00",
+      "store": "amazon_es",
+      "label": "🇪🇸 Amazon ES",
+      "region": "Europe",
+      "asin": null,
+      "url": "https://www.amazon.es/gp/new-releases/videogames/20904212031/",
+      "rank_overall": null,
+      "rank_console": null,
+      "console_category": "PS5 Games",
+      "price": null,
+      "currency": "EUR",
+      "in_stock": null,
+      "error": "Not in top list"
+    },
+    {
+      "timestamp": "2026-02-22T13:40:21.518468+00:00",
       "store": "amazon_ca",
       "label": "🇨🇦 Amazon CA",
       "region": "North America",
@@ -92,7 +122,7 @@
       "error": "Not in top list"
     },
     {
-      "timestamp": "2026-02-22T13:22:59.581932+00:00",
+      "timestamp": "2026-02-22T13:40:30.146916+00:00",
       "store": "amazon_au",
       "label": "🇦🇺 Amazon AU",
       "region": "Oceania",
