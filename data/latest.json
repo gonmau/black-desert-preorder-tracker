@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-04-23T19:04:13.288116+00:00",
+    "timestamp": "2026-04-24T02:26:07.722010+00:00",
     "store": "amazon_us",
     "label": "US Amazon US",
     "region": "North America",
@@ -11,7 +11,7 @@
     "error": null
   },
   {
-    "timestamp": "2026-04-23T19:04:28.516796+00:00",
+    "timestamp": "2026-04-24T02:26:24.970149+00:00",
     "store": "amazon_jp",
     "label": "JP Amazon JP",
     "region": "Asia",
@@ -22,18 +22,18 @@
     "error": null
   },
   {
-    "timestamp": "2026-04-23T19:04:48.106134+00:00",
+    "timestamp": "2026-04-24T02:26:45.115430+00:00",
     "store": "amazon_uk",
     "label": "GB Amazon UK",
     "region": "Europe",
     "store_url": "https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/",
-    "rank_console": null,
+    "rank_console": 17,
     "price": null,
     "currency": "GBP",
-    "error": "Ranking list not found"
+    "error": null
   },
   {
-    "timestamp": "2026-04-23T19:05:03.103943+00:00",
+    "timestamp": "2026-04-24T02:27:05.421400+00:00",
     "store": "amazon_de",
     "label": "DE Amazon DE",
     "region": "Europe",
@@ -44,7 +44,7 @@
     "error": "Not in top 100"
   },
   {
-    "timestamp": "2026-04-23T19:05:21.815147+00:00",
+    "timestamp": "2026-04-24T02:27:22.005828+00:00",
     "store": "amazon_fr",
     "label": "FR Amazon FR",
     "region": "Europe",
