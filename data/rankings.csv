@@ -1334,3 +1334,8 @@ timestamp,store,label,region,store_url,rank_console,price,currency,error
 2026-04-30T08:16:39.991345+00:00,amazon_uk,GB Amazon UK,Europe,https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/,25,,GBP,
 2026-04-30T08:16:55.167489+00:00,amazon_de,DE Amazon DE,Europe,https://www.amazon.de/gp/new-releases/videogames/20904927031/,19,€68.95,EUR,
 2026-04-30T08:17:13.700455+00:00,amazon_fr,FR Amazon FR,Europe,https://www.amazon.fr/gp/new-releases/videogames/20904206031/,,,EUR,Ranking list not found
+2026-04-30T13:48:33.436756+00:00,amazon_us,US Amazon US,North America,https://www.amazon.com/gp/new-releases/videogames/20972797011/,11,,USD,
+2026-04-30T13:48:52.811485+00:00,amazon_jp,JP Amazon JP,Asia,https://www.amazon.co.jp/-/en/gp/new-releases/videogames/8019279051/,7,,JPY,
+2026-04-30T13:49:09.916788+00:00,amazon_uk,GB Amazon UK,Europe,https://www.amazon.co.uk/gp/new-releases/videogames/20862651031/,25,,GBP,
+2026-04-30T13:49:26.648183+00:00,amazon_de,DE Amazon DE,Europe,https://www.amazon.de/gp/new-releases/videogames/20904927031/,,,EUR,Ranking list not found
+2026-04-30T13:49:43.870097+00:00,amazon_fr,FR Amazon FR,Europe,https://www.amazon.fr/gp/new-releases/videogames/20904206031/,,,EUR,Ranking list not found
