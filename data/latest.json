@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-06-05T09:40:59.535735+00:00",
+    "timestamp": "2026-06-05T14:44:04.974653+00:00",
     "store": "amazon_us",
     "label": "US Amazon US",
     "region": "North America",
@@ -11,7 +11,7 @@
     "error": null
   },
   {
-    "timestamp": "2026-06-05T09:41:14.223977+00:00",
+    "timestamp": "2026-06-05T14:44:24.404314+00:00",
     "store": "amazon_jp",
     "label": "JP Amazon JP",
     "region": "Asia",
@@ -22,7 +22,7 @@
     "error": null
   },
   {
-    "timestamp": "2026-06-05T09:41:30.876701+00:00",
+    "timestamp": "2026-06-05T14:44:39.871264+00:00",
     "store": "amazon_uk",
     "label": "GB Amazon UK",
     "region": "Europe",
@@ -30,10 +30,10 @@
     "rank_console": null,
     "price": null,
     "currency": "GBP",
-    "error": "Ranking list not found"
+    "error": "Not in top 100"
   },
   {
-    "timestamp": "2026-06-05T09:41:46.510225+00:00",
+    "timestamp": "2026-06-05T14:44:59.471662+00:00",
     "store": "amazon_de",
     "label": "DE Amazon DE",
     "region": "Europe",
@@ -44,7 +44,7 @@
     "error": null
   },
   {
-    "timestamp": "2026-06-05T09:42:04.569438+00:00",
+    "timestamp": "2026-06-05T14:45:19.124174+00:00",
     "store": "amazon_fr",
     "label": "FR Amazon FR",
     "region": "Europe",
