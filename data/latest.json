@@ -1,6 +1,6 @@
 [
   {
-    "timestamp": "2026-06-20T13:56:06.069367+00:00",
+    "timestamp": "2026-06-20T19:21:04.406297+00:00",
     "store": "amazon_us",
     "label": "US Amazon US",
     "region": "North America",
@@ -11,7 +11,7 @@
     "error": null
   },
   {
-    "timestamp": "2026-06-20T13:56:24.340954+00:00",
+    "timestamp": "2026-06-20T19:21:24.592461+00:00",
     "store": "amazon_jp",
     "label": "JP Amazon JP",
     "region": "Asia",
@@ -22,7 +22,7 @@
     "error": null
   },
   {
-    "timestamp": "2026-06-20T13:56:41.048858+00:00",
+    "timestamp": "2026-06-20T19:21:41.916090+00:00",
     "store": "amazon_uk",
     "label": "GB Amazon UK",
     "region": "Europe",
@@ -33,7 +33,7 @@
     "error": "Not in top 100"
   },
   {
-    "timestamp": "2026-06-20T13:57:00.793301+00:00",
+    "timestamp": "2026-06-20T19:21:58.793912+00:00",
     "store": "amazon_de",
     "label": "DE Amazon DE",
     "region": "Europe",
@@ -44,7 +44,7 @@
     "error": null
   },
   {
-    "timestamp": "2026-06-20T13:57:17.968958+00:00",
+    "timestamp": "2026-06-20T19:22:18.065369+00:00",
     "store": "amazon_fr",
     "label": "FR Amazon FR",
     "region": "Europe",
